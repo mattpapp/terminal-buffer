@@ -1,0 +1,51 @@
+package com.matthewp.model;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class TerminalBuffer {
+    private final int width;
+    private final int height;
+    private final int maxScrollback;
+
+    private final List<Line> screen;
+    private final List<Line> scrollback;
+
+    private int cursorX = 0;
+    private int cursorY = 0;
+
+    private Style currentStyle = Style.DEFAULT;
+
+    public TerminalBuffer(int width, int height, int maxScrollback) {
+        if (width <= 0 || height <= 0 || maxScrollback < 0) {
+            throw new IllegalArgumentException("Invalid dimensions");
+        }
+
+        this.width = width;
+        this.height = height;
+        this.maxScrollback = maxScrollback;
+
+        this.screen = new ArrayList<>(height);
+        this.scrollback = new ArrayList<>();
+
+        for (int i = 0; i < height; i++) {
+            screen.add(new Line(width));
+        }
+    }
+
+    public int getWidth() {
+        return width;
+    }
+
+    public int getHeight() {
+        return height;
+    }
+
+    public int getCursorX() {
+        return cursorX;
+    }
+
+    public int getCursorY() {
+        return cursorY;
+    }
+}
