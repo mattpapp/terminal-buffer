@@ -6,7 +6,7 @@ public class Cell {
 
     public Cell() {
         this.content = ' ';
-        this.style = new Style(-1, -1, false, false, false);
+        this.style = Style.DEFAULT;
     }
 
     public void update(char content, Style style) {
