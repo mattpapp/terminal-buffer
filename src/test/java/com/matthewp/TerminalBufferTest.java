@@ -137,6 +137,30 @@ class TerminalBufferTest {
     }
 
     @Test
+    void testInsertShiftsRight() {
+        TerminalBuffer buffer = new TerminalBuffer(10, 2, 0);
+        buffer.write("abcde");
+        buffer.setCursor(2, 0);
+
+        buffer.insert("X");
+
+        assertEquals("abXcde    ", buffer.getLineText(0));
+        assertEquals(3, buffer.getCursorX());
+    }
+
+    @Test
+    void testInsertWraps() {
+        TerminalBuffer buffer = new TerminalBuffer(5, 2, 0);
+        buffer.write("abcde");
+        buffer.setCursor(0, 0);
+
+        buffer.insert("X");
+
+        assertEquals("Xabcd", buffer.getLineText(0));
+        assertEquals("e    ", buffer.getLineText(1));
+    }
+
+    @Test
     void testGetFullContent() {
         TerminalBuffer buffer = new TerminalBuffer(5, 2, 10);
         buffer.write("aaaa\nbbbb\ncccc");

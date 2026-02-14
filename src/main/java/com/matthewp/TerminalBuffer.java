@@ -1,5 +1,6 @@
 package com.matthewp;
 
+import com.matthewp.model.Cell;
 import com.matthewp.model.Line;
 import com.matthewp.model.Style;
 import java.util.ArrayList;
@@ -115,6 +116,37 @@ public class TerminalBuffer {
 
             Line currentLine = screen.get(cursorY);
             currentLine.setCell(cursorX, c, currentStyle);
+
+            cursorX++;
+
+            if (cursorX >= width) {
+                newLine();
+            }
+        }
+    }
+
+    public void insert(String text) {
+        if (text == null) return;
+
+        for (int i = 0; i < text.length(); i++) {
+            char c = text.charAt(i);
+
+            if (c == '\n') {
+                newLine();
+                continue;
+            }
+
+            Line line = screen.get(cursorY);
+            Cell pushed = line.insertAt(cursorX, c, currentStyle);
+
+            if (pushed != null && pushed.getContent() != ' ') {
+                int nextY = cursorY + 1;
+                if (nextY >= height) {
+                    addEmptyLine();
+                    nextY = height - 1;
+                }
+                screen.get(nextY).insertAt(0, pushed.getContent(), pushed.getStyle());
+            }
 
             cursorX++;
 

@@ -26,6 +26,23 @@ public class Line {
         return cells[x];
     }
 
+    public Cell insertAt(int x, char c, Style style) {
+        if (x < 0 || x >= cells.length) return null;
+
+        Cell last = cells[cells.length - 1];
+        char lastChar = last.getContent();
+        Style lastStyle = last.getStyle();
+
+        for (int i = cells.length - 1; i > x; i--) {
+            cells[i].update(cells[i - 1].getContent(), cells[i - 1].getStyle());
+        }
+        cells[x].update(c, style);
+
+        Cell pushed = new Cell();
+        pushed.update(lastChar, lastStyle);
+        return pushed;
+    }
+
     public void fill(char c, Style style) {
         for (Cell cell : cells) {
             cell.update(c, style);
