@@ -19,6 +19,18 @@ mvn test
 
 Requires Java 21 and Maven.
 
+## Solution overview
+
+At the lowest level there is `Cell` which is just a character and a `Style` (foreground color, background color, bold/italic/underline). A `Line` is a fixed-width array of these cells, basically a row in the terminal. `TerminalBuffer` then holds a list of lines that make up the screen (the visible area, eg, 80 columns x 24 rows) and a separate list for the scrollback (lines that scrolled off the top, saved for history).
+
+The buffer keeps track of a cursor position and a current style. When you call `write("hello")`, it places each character into the cell at the cursor and moves the cursor forward. If the cursor reaches the end of a line it wraps down to the next one. If it's already on the last line, the top screen line gets pushed into the scrollback and a new blank line appears at the bottom, so everything shifts up by one.
+
+`insert("X")` is different from `write`. Instead of overwriting what's already there, it shifts the existing characters on that line to the right to make room. If a character gets pushed off the right edge, it gets placed at the start of the next line below.
+
+You can also set styles before writing so each character gets its own colors and formatting, move the cursor around (it stays within the screen bounds), fill or clear lines, clear the whole screen or screen+scrollback, and resize the terminal dimensions.
+
+All content (both screen and scrollback) is accessible through `getLine(y)` which uses a single unified index where scrollback lines come first and screen lines come after. So if there are 3 scrollback lines and 24 screen lines, index 0-2 is scrollback and 3-26 is screen.
+
 ## Structure
 
 Four classes:
