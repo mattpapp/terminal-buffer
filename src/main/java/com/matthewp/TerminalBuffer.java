@@ -139,4 +139,22 @@ public class TerminalBuffer {
             screen.addLast(new Line(width));
         }
     }
+
+    public String getLineText(int y) {
+        if (y < 0 || y >= height) {
+            return "";
+        }
+        return screen.get(y).toString();
+    }
+
+    public String getScreenAsString() {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < screen.size(); i++) {
+            sb.append(screen.get(i).toString());
+            if (i < screen.size() - 1) {
+                sb.append('\n');
+            }
+        }
+        return sb.toString();
+    }
 }
