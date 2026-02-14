@@ -83,36 +83,34 @@ public class TerminalBuffer {
             char c = text.charAt(i);
 
             if (c == '\n') {
-                cursorX = 0;
-                if (cursorY < height - 1) {
-                    cursorY++;
-                } else {
-                    Line removed = screen.removeFirst();
-                    scrollback.addLast(removed);
-                    if (scrollback.size() > maxScrollback) {
-                        scrollback.removeFirst();
-                    }
-                    screen.addLast(new Line(width));
-                }
+                newLine();
                 continue;
             }
 
-            screen.get(cursorY).setCell(cursorX, c, currentStyle);
+            Line currentLine = screen.get(cursorY);
+            currentLine.setCell(cursorX, c, currentStyle);
+
             cursorX++;
 
             if (cursorX >= width) {
-                cursorX = 0;
-                if (cursorY < height - 1) {
-                    cursorY++;
-                } else {
-                    Line removed = screen.removeFirst();
-                    scrollback.addLast(removed);
-                    if (scrollback.size() > maxScrollback) {
-                        scrollback.removeFirst();
-                    }
-                    screen.addLast(new Line(width));
-                }
+                newLine();
             }
+        }
+    }
+
+    private void newLine() {
+        cursorX = 0;
+        if (cursorY < height - 1) {
+            cursorY++;
+        } else {
+            Line top = screen.removeFirst();
+            scrollback.addLast(top);
+
+            if (scrollback.size() > maxScrollback) {
+                scrollback.removeFirst();
+            }
+
+            screen.addLast(new Line(width));
         }
     }
 }
