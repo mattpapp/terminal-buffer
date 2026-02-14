@@ -129,15 +129,19 @@ public class TerminalBuffer {
         if (cursorY < height - 1) {
             cursorY++;
         } else {
-            Line top = screen.removeFirst();
-            scrollback.addLast(top);
-
-            if (scrollback.size() > maxScrollback) {
-                scrollback.removeFirst();
-            }
-
-            screen.addLast(new Line(width));
+            addEmptyLine();
         }
+    }
+
+    public void addEmptyLine() {
+        Line top = screen.removeFirst();
+        scrollback.addLast(top);
+
+        if (scrollback.size() > maxScrollback) {
+            scrollback.removeFirst();
+        }
+
+        screen.addLast(new Line(width));
     }
 
     public String getLineText(int y) {

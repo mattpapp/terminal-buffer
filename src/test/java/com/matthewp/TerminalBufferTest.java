@@ -122,6 +122,21 @@ class TerminalBufferTest {
     }
 
     @Test
+    void testInsertEmptyLine() {
+        TerminalBuffer buffer = new TerminalBuffer(5, 2, 10);
+        buffer.write("hello");
+        buffer.setCursor(3, 1);
+
+        buffer.addEmptyLine();
+
+        assertEquals(1, buffer.getScrollbackSize());
+        assertEquals("hello", buffer.getLine(0).toString());
+        assertEquals("     ", buffer.getLineText(1));
+        assertEquals(3, buffer.getCursorX());
+        assertEquals(1, buffer.getCursorY());
+    }
+
+    @Test
     void testGetFullContent() {
         TerminalBuffer buffer = new TerminalBuffer(5, 2, 10);
         buffer.write("aaaa\nbbbb\ncccc");
