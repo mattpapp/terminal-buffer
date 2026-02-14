@@ -22,8 +22,4 @@ public class Cell {
         return style;
     }
 
-    @Override
-    public String toString() {
-        return String.valueOf(content);
-    }
 }

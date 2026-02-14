@@ -14,9 +14,8 @@ public class Line {
     }
 
     public void setCell(int x, char c, Style style) {
-        if (x >= 0 && x < cells.length) {
-            cells[x].update(c, style);
-        }
+        if (x < 0 || x >= cells.length) return;
+        cells[x].update(c, style);
     }
 
     public Cell getCell(int x) {
