@@ -1,5 +1,7 @@
-package com.matthewp.model;
+package com.matthewp;
 
+import com.matthewp.model.Line;
+import com.matthewp.model.Style;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -72,5 +74,45 @@ public class TerminalBuffer {
 
     public void moveRight(int n) {
         moveCursor(n, 0);
+    }
+
+    public void write(String text) {
+        if (text == null) return;
+
+        for (int i = 0; i < text.length(); i++) {
+            char c = text.charAt(i);
+
+            if (c == '\n') {
+                cursorX = 0;
+                if (cursorY < height - 1) {
+                    cursorY++;
+                } else {
+                    Line removed = screen.removeFirst();
+                    scrollback.addLast(removed);
+                    if (scrollback.size() > maxScrollback) {
+                        scrollback.removeFirst();
+                    }
+                    screen.addLast(new Line(width));
+                }
+                continue;
+            }
+
+            screen.get(cursorY).setCell(cursorX, c, currentStyle);
+            cursorX++;
+
+            if (cursorX >= width) {
+                cursorX = 0;
+                if (cursorY < height - 1) {
+                    cursorY++;
+                } else {
+                    Line removed = screen.removeFirst();
+                    scrollback.addLast(removed);
+                    if (scrollback.size() > maxScrollback) {
+                        scrollback.removeFirst();
+                    }
+                    screen.addLast(new Line(width));
+                }
+            }
+        }
     }
 }
