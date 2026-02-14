@@ -161,6 +161,95 @@ class TerminalBufferTest {
     }
 
     @Test
+    void testMoveLeft() {
+        TerminalBuffer buffer = new TerminalBuffer(10, 5, 0);
+        buffer.write("hello");
+        buffer.moveLeft(3);
+
+        assertEquals(2, buffer.getCursorX());
+        assertEquals(0, buffer.getCursorY());
+    }
+
+    @Test
+    void testMoveRight() {
+        TerminalBuffer buffer = new TerminalBuffer(10, 5, 0);
+        buffer.moveRight(4);
+
+        assertEquals(4, buffer.getCursorX());
+    }
+
+    @Test
+    void testMoveDown() {
+        TerminalBuffer buffer = new TerminalBuffer(10, 5, 0);
+        buffer.moveDown(3);
+
+        assertEquals(3, buffer.getCursorY());
+    }
+
+    @Test
+    void testMoveUp() {
+        TerminalBuffer buffer = new TerminalBuffer(10, 5, 0);
+        buffer.setCursor(0, 4);
+        buffer.moveUp(2);
+
+        assertEquals(2, buffer.getCursorY());
+    }
+
+    @Test
+    void testMoveStopsAtEdge() {
+        TerminalBuffer buffer = new TerminalBuffer(10, 5, 0);
+        buffer.moveLeft(100);
+        assertEquals(0, buffer.getCursorX());
+
+        buffer.moveUp(100);
+        assertEquals(0, buffer.getCursorY());
+
+        buffer.moveRight(100);
+        assertEquals(9, buffer.getCursorX());
+
+        buffer.moveDown(100);
+        assertEquals(4, buffer.getCursorY());
+    }
+
+    @Test
+    void testClearAll() {
+        TerminalBuffer buffer = new TerminalBuffer(5, 2, 10);
+        buffer.write("aaa\nbbb\nccc");
+
+        buffer.clearAll();
+
+        assertEquals(0, buffer.getCursorX());
+        assertEquals(0, buffer.getCursorY());
+        assertEquals(0, buffer.getScrollbackSize());
+        assertEquals("     ", buffer.getLineText(0));
+    }
+
+    @Test
+    void testGetScreenAsString() {
+        TerminalBuffer buffer = new TerminalBuffer(5, 2, 0);
+        buffer.write("hi");
+        buffer.setCursor(0, 1);
+        buffer.write("bye");
+
+        String screen = buffer.getScreenAsString();
+        assertEquals("hi   \nbye  ", screen);
+    }
+
+    @Test
+    void testDimensions() {
+        TerminalBuffer buffer = new TerminalBuffer(80, 24, 100);
+        assertEquals(80, buffer.getWidth());
+        assertEquals(24, buffer.getHeight());
+    }
+
+    @Test
+    void testInvalidDimensions() {
+        assertThrows(IllegalArgumentException.class, () -> new TerminalBuffer(0, 24, 10));
+        assertThrows(IllegalArgumentException.class, () -> new TerminalBuffer(80, 0, 10));
+        assertThrows(IllegalArgumentException.class, () -> new TerminalBuffer(80, 24, -1));
+    }
+
+    @Test
     void testGetFullContent() {
         TerminalBuffer buffer = new TerminalBuffer(5, 2, 10);
         buffer.write("aaaa\nbbbb\ncccc");
