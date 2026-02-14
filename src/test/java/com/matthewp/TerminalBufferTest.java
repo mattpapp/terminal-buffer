@@ -161,6 +161,20 @@ class TerminalBufferTest {
     }
 
     @Test
+    void testInsertAtBottomLineScrolls() {
+        TerminalBuffer buffer = new TerminalBuffer(5, 2, 10);
+        buffer.fillLine(0, 'a');
+        buffer.fillLine(1, 'b');
+        buffer.setCursor(0, 1);
+
+        buffer.insert("X");
+
+        assertEquals("Xbbbb", buffer.getLineText(0));
+        assertEquals(0, buffer.getCursorY());
+        assertEquals(1, buffer.getCursorX());
+    }
+
+    @Test
     void testMoveLeft() {
         TerminalBuffer buffer = new TerminalBuffer(10, 5, 0);
         buffer.write("hello");

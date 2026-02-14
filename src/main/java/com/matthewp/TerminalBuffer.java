@@ -136,13 +136,14 @@ public class TerminalBuffer {
                 continue;
             }
 
-            Line line = screen.get(cursorY);
-            Cell pushed = line.insertAt(cursorX, c, currentStyle);
+            Line currentLine = screen.get(cursorY);
+            Cell pushed = currentLine.insertAt(cursorX, c, currentStyle);
 
             if (pushed != null && pushed.getContent() != ' ') {
                 int nextY = cursorY + 1;
                 if (nextY >= height) {
                     addEmptyLine();
+                    cursorY--;
                     nextY = height - 1;
                 }
                 screen.get(nextY).insertAt(0, pushed.getContent(), pushed.getStyle());
