@@ -26,10 +26,14 @@ public class Line {
         return cells[x];
     }
 
-    public void clear(Style style) {
+    public void fill(char c, Style style) {
         for (Cell cell : cells) {
-            cell.update(' ', style);
+            cell.update(c, style);
         }
+    }
+
+    public void clear(Style style) {
+        fill(' ', style);
     }
 
     @Override
