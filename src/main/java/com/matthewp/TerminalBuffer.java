@@ -76,6 +76,32 @@ public class TerminalBuffer {
         moveCursor(n, 0);
     }
 
+    public void setStyle(Style style) {
+        if (style != null) {
+            this.currentStyle = style;
+        } else {
+            this.currentStyle = Style.DEFAULT;
+        }
+    }
+
+    public void clear() {
+        for (Line line : screen) {
+            line.clear(currentStyle);
+        }
+        setCursor(0, 0);
+    }
+
+    public void fillLine(int y, char c) {
+        if (y >= 0 && y < height) {
+            screen.get(y).fill(c, currentStyle);
+        }
+    }
+
+    public void clearAll() {
+        clear();
+        scrollback.clear();
+    }
+
     public void write(String text) {
         if (text == null) return;
 
