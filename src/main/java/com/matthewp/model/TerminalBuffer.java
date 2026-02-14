@@ -48,4 +48,29 @@ public class TerminalBuffer {
     public int getCursorY() {
         return cursorY;
     }
+
+    public void setCursor(int x, int y) {
+        this.cursorX = Math.max(0, Math.min(x, width - 1));
+        this.cursorY = Math.max(0, Math.min(y, height - 1));
+    }
+
+    public void moveCursor(int dx, int dy) {
+        setCursor(cursorX + dx, cursorY + dy);
+    }
+
+    public void moveUp(int n) {
+        moveCursor(0, -n);
+    }
+
+    public void moveDown(int n) {
+        moveCursor(0, n);
+    }
+
+    public void moveLeft(int n) {
+        moveCursor(-n, 0);
+    }
+
+    public void moveRight(int n) {
+        moveCursor(n, 0);
+    }
 }
