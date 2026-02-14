@@ -2,6 +2,7 @@ package com.matthewp;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import com.matthewp.model.Style;
 import org.junit.jupiter.api.Test;
 
 class TerminalBufferTest {
@@ -80,5 +81,53 @@ class TerminalBufferTest {
 
         assertEquals(0, buffer.getCursorX());
         assertEquals(1, buffer.getCursorY());
+    }
+
+    @Test
+    void testGetCell() {
+        TerminalBuffer buffer = new TerminalBuffer(10, 5, 0);
+        buffer.write("Hi");
+        assertEquals('H', buffer.getLine(0).getCell(0).getContent());
+        assertEquals(' ', buffer.getLine(0).getCell(5).getContent());
+    }
+
+    @Test
+    void testGetCellStyle() {
+        TerminalBuffer buffer = new TerminalBuffer(10, 5, 0);
+        Style custom = new Style(1, 2, true, false, false);
+        buffer.setStyle(custom);
+        buffer.write("a");
+
+        assertEquals(custom, buffer.getLine(0).getCell(0).getStyle());
+    }
+
+    @Test
+    void testGetLineUnified() {
+        TerminalBuffer buffer = new TerminalBuffer(5, 2, 10);
+        buffer.write("aaaa\nbbbb\ncccc");
+
+        assertEquals(1, buffer.getScrollbackSize());
+        assertEquals("aaaa ", buffer.getLine(0).toString());
+        assertEquals("bbbb ", buffer.getLine(1).toString());
+        assertEquals("cccc ", buffer.getLine(2).toString());
+    }
+
+    @Test
+    void testScrollbackEviction() {
+        TerminalBuffer buffer = new TerminalBuffer(5, 2, 3);
+        for (int i = 0; i < 10; i++) {
+            buffer.write("line\n");
+        }
+        assertTrue(buffer.getScrollbackSize() <= 3);
+    }
+
+    @Test
+    void testGetFullContent() {
+        TerminalBuffer buffer = new TerminalBuffer(5, 2, 10);
+        buffer.write("aaaa\nbbbb\ncccc");
+
+        String full = buffer.getFullContent();
+        assertTrue(full.contains("aaaa"));
+        assertTrue(full.contains("cccc"));
     }
 }
