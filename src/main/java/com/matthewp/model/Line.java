@@ -48,6 +48,15 @@ public class Line {
         }
     }
 
+    public Line resized(int newWidth) {
+        Line resized = new Line(newWidth);
+        int copyWidth = Math.min(cells.length, newWidth);
+        for (int i = 0; i < copyWidth; i++) {
+            resized.setCell(i, cells[i].getContent(), cells[i].getStyle());
+        }
+        return resized;
+    }
+
     public void clear(Style style) {
         fill(' ', style);
     }

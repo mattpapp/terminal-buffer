@@ -7,8 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TerminalBuffer {
-    private final int width;
-    private final int height;
+    private int width;
+    private int height;
     private final int maxScrollback;
 
     private final List<Line> screen;
@@ -175,6 +175,37 @@ public class TerminalBuffer {
         }
 
         screen.addLast(new Line(width));
+    }
+
+    public void resize(int newWidth, int newHeight) {
+        if (newWidth <= 0 || newHeight <= 0) {
+            throw new IllegalArgumentException("Invalid dimensions");
+        }
+
+        while (screen.size() > newHeight) {
+            scrollback.addLast(screen.removeFirst());
+            if (scrollback.size() > maxScrollback) {
+                scrollback.removeFirst();
+            }
+        }
+
+        while (screen.size() < newHeight) {
+            if (!scrollback.isEmpty()) {
+                screen.addFirst(scrollback.removeLast());
+            } else {
+                screen.addLast(new Line(newWidth));
+            }
+        }
+
+        if (newWidth != width) {
+            for (int i = 0; i < screen.size(); i++) {
+                screen.set(i, screen.get(i).resized(newWidth));
+            }
+        }
+
+        this.width = newWidth;
+        this.height = newHeight;
+        setCursor(cursorX, cursorY);
     }
 
     public String getLineText(int y) {

@@ -272,4 +272,53 @@ class TerminalBufferTest {
         assertTrue(full.contains("aaaa"));
         assertTrue(full.contains("cccc"));
     }
+
+    @Test
+    void testResizeShrinkHeight() {
+        TerminalBuffer buffer = new TerminalBuffer(5, 3, 10);
+        buffer.write("aaa\nbbb\nccc");
+
+        buffer.resize(5, 2);
+
+        assertEquals(2, buffer.getHeight());
+        assertEquals(1, buffer.getScrollbackSize());
+        assertEquals("bbb  ", buffer.getLineText(0));
+        assertEquals("ccc  ", buffer.getLineText(1));
+    }
+
+    @Test
+    void testResizeGrowHeightRestoresScrollback() {
+        TerminalBuffer buffer = new TerminalBuffer(5, 2, 10);
+        buffer.write("aaa\nbbb\nccc");
+
+        assertEquals(1, buffer.getScrollbackSize());
+
+        buffer.resize(5, 3);
+
+        assertEquals(3, buffer.getHeight());
+        assertEquals(0, buffer.getScrollbackSize());
+        assertEquals("aaa  ", buffer.getLineText(0));
+    }
+
+    @Test
+    void testResizeChangesWidth() {
+        TerminalBuffer buffer = new TerminalBuffer(5, 2, 0);
+        buffer.write("abcde");
+
+        buffer.resize(3, 2);
+
+        assertEquals(3, buffer.getWidth());
+        assertEquals("abc", buffer.getLineText(0));
+    }
+
+    @Test
+    void testResizeClampsCursor() {
+        TerminalBuffer buffer = new TerminalBuffer(10, 10, 0);
+        buffer.setCursor(8, 7);
+
+        buffer.resize(5, 3);
+
+        assertEquals(4, buffer.getCursorX());
+        assertEquals(2, buffer.getCursorY());
+    }
 }
