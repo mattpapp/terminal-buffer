@@ -147,8 +147,38 @@ public class TerminalBuffer {
         return screen.get(y).toString();
     }
 
+    public int getScrollbackSize() {
+        return scrollback.size();
+    }
+
+    public Line getLine(int y) {
+        int scrollbackSize = scrollback.size();
+        if (y < 0 || y >= scrollbackSize + height) {
+            throw new IndexOutOfBoundsException("row " + y + " out of bounds");
+        }
+        if (y < scrollbackSize) {
+            return scrollback.get(y);
+        }
+        return screen.get(y - scrollbackSize);
+    }
+
     public String getScreenAsString() {
         StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < screen.size(); i++) {
+            sb.append(screen.get(i).toString());
+            if (i < screen.size() - 1) {
+                sb.append('\n');
+            }
+        }
+        return sb.toString();
+    }
+
+    public String getFullContent() {
+        StringBuilder sb = new StringBuilder();
+        for (Line line : scrollback) {
+            sb.append(line.toString());
+            sb.append('\n');
+        }
         for (int i = 0; i < screen.size(); i++) {
             sb.append(screen.get(i).toString());
             if (i < screen.size() - 1) {
