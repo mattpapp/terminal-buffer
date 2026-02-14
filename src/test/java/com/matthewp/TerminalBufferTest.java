@@ -49,4 +49,36 @@ class TerminalBufferTest {
         buffer.fillLine(0, 'x');
         assertEquals("xxxxx", buffer.getLineText(0));
     }
+
+    @Test
+    void testCursorClamping() {
+        TerminalBuffer buffer = new TerminalBuffer(10, 10, 0);
+        buffer.setCursor(-10, 50);
+
+        assertEquals(0, buffer.getCursorX());
+        assertEquals(9, buffer.getCursorY());
+    }
+
+    @Test
+    void testWriteEmptyOrNull() {
+        TerminalBuffer buffer = new TerminalBuffer(80, 24, 10);
+        buffer.setCursor(5, 5);
+
+        buffer.write(null);
+        buffer.write("");
+
+        assertEquals(5, buffer.getCursorX());
+        assertEquals(5, buffer.getCursorY());
+    }
+
+    @Test
+    void testBottomRightCornerWrap() {
+        TerminalBuffer buffer = new TerminalBuffer(10, 2, 5);
+        buffer.setCursor(9, 1);
+
+        buffer.write("A");
+
+        assertEquals(0, buffer.getCursorX());
+        assertEquals(1, buffer.getCursorY());
+    }
 }
