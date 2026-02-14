@@ -321,4 +321,19 @@ class TerminalBufferTest {
         assertEquals(4, buffer.getCursorX());
         assertEquals(2, buffer.getCursorY());
     }
+
+    @Test
+    void testResizeScrollbackLinesGetCorrectWidth() {
+        TerminalBuffer buffer = new TerminalBuffer(10, 3, 10);
+        buffer.write("abcdefghij");
+
+        buffer.resize(5, 2);
+
+        assertEquals(1, buffer.getScrollbackSize());
+
+        buffer.resize(5, 3);
+
+        assertEquals(0, buffer.getScrollbackSize());
+        assertEquals(5, buffer.getLineText(0).length());
+    }
 }

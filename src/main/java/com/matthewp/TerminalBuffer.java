@@ -191,7 +191,7 @@ public class TerminalBuffer {
 
         while (screen.size() < newHeight) {
             if (!scrollback.isEmpty()) {
-                screen.addFirst(scrollback.removeLast());
+                screen.addFirst(scrollback.removeLast().resized(newWidth));
             } else {
                 screen.addLast(new Line(newWidth));
             }
